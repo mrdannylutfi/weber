@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Fluid Beach Typography</title>
+    <!-- Google Fonts for randomized styles -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Cinzel:wght@700&family=Playfair+Display:ital,wght@0,700;1,400&family=Space+Grotesk:wght@700&family=Syne:wght@800&family=Unbounded:wght@800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #111;
+            overflow: hidden;
+            font-family: system-ui, sans-serif;
+            transition: background-color 0.4s ease;
+        }
+
+        /* Hero Wrapper */
+        .stage {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            padding: 24px;
+            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Sharp Beach Image with dynamic adjustments */
+        .beach-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            transition: filter 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Typography Container */
+        .typeset-box {
+            position: relative;
+            z-index: 3;
+            max-width: 800px;
+            width: 100%;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: color 0.4s ease, text-shadow 0.4s ease;
+        }
+
+        /* Dynamic Title & Subtitle Fluid Layouts */
+        .dynamic-title {
+            /* Hybrid viewport scale clamped between clean boundaries */
+            font-size: clamp(2.5rem, 8vw, 5.5rem);
+            line-height: 1.05;
+            margin-bottom: 16px;
+            transition: font-size 0.4s, letter-spacing 0.4s;
+        }
+
+        .dynamic-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.35rem);
+            max-width: 540px;
+            line-height: 1.5;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        /* CONTROLS AREA */
+        .control-panel {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            right: 24px;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .mode-indicator {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background 0.4s, color 0.4s;
+        }
+
+        .randomize-btn {
+            pointer-events: auto;
+            padding: 14px 28px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: transform 0.2s, background 0.2s, color 0.2s;
+        }
+        .randomize-btn:hover { transform: scale(1.04); }
+        .randomize-btn:active { transform: scale(0.98); }
+
+        /* ==========================================
+           LAYOUT FRAMEWORKS (Desktop / General)
+           ========================================== */
+        .layout-center { align-items: center; justify-content: center; text-align: center; }
+        .layout-editorial-left { align-items: flex-end; justify-content: flex-start; text-align: left; }
+        .layout-brutalist-right { align-items: flex-start; justify-content: flex-end; text-align: right; }
+
+        /* ==========================================
+           CONTRAST POLARITIES (Light vs Dark Mode)
+           ========================================== */
+        
+        /* Dark Mode Properties */
+        .mode-dark { background-color: #111; }
+        .mode-dark .typeset-box { color: #ffffff; }
+        .mode-dark .mode-indicator { background: rgba(255,255,255,0.15); color: #fff; }
+        .mode-dark .randomize-btn { background: #ffffff; color: #000000; }
+
+        /* Light Mode Properties (Bleached Backdrop) */
+        .mode-light { background-color: #f4f4f4; }
+        .mode-light .typeset-box { color: #1a202c; }
+        .mode-light .mode-indicator { background: rgba(0,0,0,0.08); color: #1a202c; }
+        .mode-light .randomize-btn { background: #1a202c; color: #ffffff; }
+
+
+        /* ==========================================
+           MOBILE RESPONSIVE ADAPTATIONS
+           ========================================== */
+        @media (max-width: 768px) {
+            .stage {
+                /* Lock structural alignment layout for crowded small viewports */
+                align-items: center !important;
+                justify-content: center !important;
+                text-align: center !important;
+                padding: 16px;
+            }
+            .typeset-box {
+                max-width: 100%;
+            }
+            .dynamic-subtitle {
+                max-width: 100%;
+            }
+            .control-panel {
+                flex-direction: column-reverse;
+                gap: 12px;
+                bottom: 16px;
+                left: 16px;
+                right: 16px;
+            }
+            .randomize-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body class="mode-dark">
+
+    <main class="stage layout-center" id="stage">
+        <!-- Sun-drenched beach asset -->
+        <img id="beachImage" src="https://unsplash.com" alt="Ocean Beach" class="beach-bg">
+        
+        <div class="typeset-box" id="typesetBox">
+            <h1 class="dynamic-title" id="titleText">Salt & Light</h1>
+            <p class="dynamic-subtitle" id="subtitleText">Calculated sharpness optimization running responsive typography tests across light and dark coastal exposures.</p>
+        </div>
+    </main>
+
+    <div class="control-panel">
+        <div class="mode-indicator" id="modeIndicator">Dark Mode Overlay</div>
+        <button class="randomize-btn" onclick="randomizeDesign()">Randomize Look</button>
+    </div>
+
+    <script>
+        const designPools = {
+            fonts: [
+                { name: "'Playfair Display', serif", weight: "700", style: "italic" },
+                { name: "'Space Grotesk', sans-serif", weight: "700", style: "normal" },
+                { name: "'Cinzel', serif", weight: "700", style: "normal" },
+                { name: "'Syne', sans-serif", weight: "800", style: "normal" },
+                { name: "'Unbounded', sans-serif", weight: "800", style: "normal" }
+            ],
+            layouts: ['layout-center', 'layout-editorial-left', 'layout-brutalist-right'],
+            phrases: [
+                { t: "SALT IN THE AIR", s: "Where the high tide meets sharp, modern mathematical layout structures perfectly." },
+                { t: "COASTAL SHIFT", s: "An exploration of dynamic image filters ensuring complete absolute accessible readability." },
+                { t: "BAREFOOT", s: "Stark contrast typography breaking through bright morning sun glare on white sand." },
+                { t: "MIDNIGHT SURF", s: "Deep ocean horizons framing precise text weights, crisp vector smoothing activated." }
+            ]
+        };
+
+        function randomizeDesign() {
+            const body = document.body;
+            const stage = document.getElementById('stage');
+            const img = document.getElementById('beachImage');
+            const title = document.getElementById('titleText');
+            const subtitle = document.getElementById('subtitleText');
+            const indicator = document.getElementById('modeIndicator');
+
+            // 1. Determine Polarity Mode (50/50 chance for Light vs Dark approach)
+            const isLightMode = Math.random() > 0.5;
+            
+            if (isLightMode) {
+                body.className = "mode-light";
+                indicator.innerText = "Light Mode (Bleached Image)";
+            } else {
+                body.className = "mode-dark";
+                indicator.innerText = "Dark Mode (Dimmed Image)";
+            }
+
+            // 2. Randomize Font Choices
+            const randomFont = designPools.fonts[Math.floor(Math.random() * designPools.fonts.length)];
+            title.style.fontFamily = randomFont.name;
+            title.style.fontWeight = randomFont.weight;
+            title.style.fontStyle = randomFont.style;
+
+            // 3. Randomize Layout Framework Class
+            designPools.layouts.forEach(className => stage.classList.remove(className));
+            const randomLayout = designPools.layouts[Math.floor(Math.random() * designPools.layouts.length)];
+            stage.classList.add(randomLayout);
+
+            // 4. Structural Spacing Variations
+            title.style.letterSpacing = Math.random() > 0.5 ? '-0.04em' : '0.04em';
+
+            // 5. Update Copy Text Strings
+            const randomPhrase = designPools.phrases[Math.floor(Math.random() * designPools.phrases.length)];
+            title.innerText = randomPhrase.t;
+            subtitle.innerText = randomPhrase.s;
+
+            // 6. Native Browser CSS Filter Engine Core
+            if (isLightMode) {
+                // LIGHT MODE: Intentionally bleach/overexpose image to establish dark text legibility
