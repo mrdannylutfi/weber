@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Fluid Beach Typography</title>
+    <!-- Google Fonts for randomized styles -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Cinzel:wght@700&family=Playfair+Display:ital,wght@0,700;1,400&family=Space+Grotesk:wght@700&family=Syne:wght@800&family=Unbounded:wght@800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #111;
+            overflow: hidden;
+            font-family: system-ui, sans-serif;
+            transition: background-color 0.4s ease;
+        }
+
+        /* Hero Wrapper */
+        .stage {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            padding: 24px;
+            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Sharp Beach Image with dynamic adjustments */
+        .beach-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            transition: filter 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Typography Container */
+        .typeset-box {
+            position: relative;
+            z-index: 3;
+            max-width: 800px;
+            width: 100%;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: color 0.4s ease, text-shadow 0.4s ease;
+        }
+
+        /* Dynamic Title & Subtitle Fluid Layouts */
+        .dynamic-title {
+            /* Hybrid viewport scale clamped between clean boundaries */
+            font-size: clamp(2.5rem, 8vw, 5.5rem);
+            line-height: 1.05;
+            margin-bottom: 16px;
+            transition: font-size 0.4s, letter-spacing 0.4s;
+        }
+
+        .dynamic-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.35rem);
+            max-width: 540px;
+            line-height: 1.5;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        /* CONTROLS AREA */
+        .control-panel {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            right: 24px;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .mode-indicator {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background 0.4s, color 0.4s;
+        }
+
+        .randomize-btn {
+            pointer-events: auto;
+            padding: 14px 28px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: transform 0.2s, background 0.2s, color 0.2s;
+        }
+        .randomize-btn:hover { transform: scale(1.04); }
+        .randomize-btn:active { transform: scale(0.98); }
+
+        /* ==========================================
+           LAYOUT FRAMEWORKS (Desktop / General)
+           ========================================== */
+        .layout-center { align-items: center; justify-content: center; text-align: center; }
+        .layout-editorial-left { align-items: flex-end; justify-content: flex-start; text-align: left; }
+        .layout-brutalist-right { align-items: flex-start; justify-content: flex-end; text-align: right; }
+
+        /* ==========================================
+           CONTRAST POLARITIES (Light vs Dark Mode)
+           ========================================== */
+        
+        /* Dark Mode Properties */
+        .mode-dark { background-color: #111; }
+        .mode-dark .typeset-box { color: #ffffff; }
+        .mode-dark .mode-indicator { background: rgba(255,255,255,0.15); color: #fff; }
+        .mode-dark .randomize-btn { background: #ffffff; color: #000000; }
+
+        /* Light Mode Properties (Bleached Backdrop) */
+        .mode-light { background-color: #f4f4f4; }
+        .mode-light .typeset-box { color: #1a202c; }
+        .mode-light .mode-indicator { background: rgba(0,0,0,0.08); color: #1a202c; }
+        .mode-light .randomize-btn { background: #1a202c; color: #ffffff; }
+
+
+        /* ==========================================
+           MOBILE RESPONSIVE ADAPTATIONS
+           ========================================== */
+        @media (max-width: 768px) {
+            .stage {
+                /* Lock structural alignment layout for crowded small viewports */
+                align-items: center !important;
+                justify-content: center !important;
+                text-align: center !important;
+                padding: 16px;
+            }
+            .typeset-box {
+                max-width: 100%;
+            }
+            .dynamic-subtitle {
+                max-width: 100%;
+            }
+            .control-panel {
+                flex-direction: column-reverse;
+                gap: 12px;
+                bottom: 16px;
+                left: 16px;
+                right: 16px;
+            }
+            .randomize-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body class="mode-dark">
+
+    <main class="stage layout-center" id="stage">
+        <!-- Sun-drenched beach asset -->
+        <img id="beachImage" src="https://unsplash.com" alt="Ocean Beach" class="beach-bg">
+        
+        <div class="typeset-box" id="typesetBox">
+            <h1 class="dynamic-title" id="titleText">Salt & Light</h1>
+            <p class="dynamic-subtitle" id="subtitleText">Calculated sharpness optimization running responsive typography tests across light and dark coastal exposures.</p>
+        </div>
+    </main>
+
+    <div class="control-panel">
+        <div class="mode-indicator" id="modeIndicator">Dark Mode Overlay</div>
+        <button class="randomize-btn" onclick="randomizeDesign()">Randomize Look</button>
+    </div>
+
+    <script>
+        const designPools = {
+            fonts: [
+                { name: "'Playfair Display', serif", weight: "700", style: "italic" },
+                { name: "'Space Grotesk', sans-serif", weight: "700", style: "normal" },
+                { name: "'Cinzel', serif", weight: "700", style: "normal" },
+                { name: "'Syne', sans-serif", weight: "800", style: "normal" },
+                { name: "'Unbounded', sans-serif", weight: "800", style: "normal" }
+            ],
+            layouts: ['layout-center', 'layout-editorial-left', 'layout-brutalist-right'],
+            phrases: [
+                { t: "SALT IN THE AIR", s: "Where the high tide meets sharp, modern mathematical layout structures perfectly." },
+                { t: "COASTAL SHIFT", s: "An exploration of dynamic image filters ensuring complete absolute accessible readability." },
+                { t: "BAREFOOT", s: "Stark contrast typography breaking through bright morning sun glare on white sand." },
+                { t: "MIDNIGHT SURF", s: "Deep ocean horizons framing precise text weights, crisp vector smoothing activated." }
+            ]
+        };
+
+        function randomizeDesign() {
+            const body = document.body;
+            const stage = document.getElementById('stage');
+            const img = document.getElementById('beachImage');
+            const title = document.getElementById('titleText');
+            const subtitle = document.getElementById('subtitleText');
+            const indicator = document.getElementById('modeIndicator');
+
+            // 1. Determine Polarity Mode (50/50 chance for Light vs Dark approach)
+            const isLightMode = Math.random() > 0.5;
+            
+            if (isLightMode) {
+                body.className = "mode-light";
+                indicator.innerText = "Light Mode (Bleached Image)";
+            } else {
+                body.className = "mode-dark";
+                indicator.innerText = "Dark Mode (Dimmed Image)";
+            }
+
+            // 2. Randomize Font Choices
+            const randomFont = designPools.fonts[Math.floor(Math.random() * designPools.fonts.length)];
+            title.style.fontFamily = randomFont.name;
+            title.style.fontWeight = randomFont.weight;
+            title.style.fontStyle = randomFont.style;
+
+            // 3. Randomize Layout Framework Class
+            designPools.layouts.forEach(className => stage.classList.remove(className));
+            const randomLayout = designPools.layouts[Math.floor(Math.random() * designPools.layouts.length)];
+            stage.classList.add(randomLayout);
+
+            // 4. Structural Spacing Variations
+            title.style.letterSpacing = Math.random() > 0.5 ? '-0.04em' : '0.04em';
+
+            // 5. Update Copy Text Strings
+            const randomPhrase = designPools.phrases[Math.floor(Math.random() * designPools.phrases.length)];
+            title.innerText = randomPhrase.t;
+            subtitle.innerText = randomPhrase.s;
+
+            // 6. Native Browser CSS Filter Engine Core
+            if (isLightMode) {
+                // LIGHT MODE: Intentionally bleach/overexpose image to establish dark text legibility
+
+                AI Mode Conversation: javascript on html : apply a typeset against an image with brightness and sharpness of text against imageYou said: javascript on html : apply a typeset against an image with brightness and sharpness of text against imagejavascript on html : apply a typeset against an image with brightness and sharpness of text against imageTo ensure text remains perfectly readable, sharp, and accessible when placed directly over an image, you need a combination of HTML layout, CSS styling, and visual contrast techniques.Here is a complete, production-ready recipe using modern HTML and CSS to achieve a sharp, high-contrast typeset over a background image.Code Implementationhtml<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sharp Text Over Image</title>
+    <style>
+        /* Container holding both image and text */
+        .hero-container {
+            position: relative;
+            width: 100%;
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        /* The background image with built-in brightness reduction */
+        .hero-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            /* Lowers image brightness by 40% to make text pop */
+            filter: brightness(0.6); 
+        }
+
+        /* The text wrapper */
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+            text-align: center;
+            padding: 20px;
+            color: #ffffff; /* High contrast white text */
+        }
+
+        /* Maximizing text sharpness and legibility */
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            
+            /* Subtly smoothes fonts on macOS/iOS for crisp rendering */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            
+            /* Text shadow adds micro-contrast against busy image details */
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6), 
+                         0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-description {
+            font-size: 1.25rem;
+            font-weight: 400;
+            line-height: 1.6;
+            /* Semi-transparent white to create hierarchy while remaining legible */
+            color: rgba(255, 255, 255, 0.9); 
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero-container">
+        <!-- Replace with your image URL -->
+        <img src="https://unsplash.com" alt="Scenic Background" class="hero-image">
+        
+        <div class="hero-content">
+            <h1 class="hero-title">Breathtaking Typography</h1>
+            <p class="hero-description">This text remains razor-sharp and highly readable, even against unpredictable, bright, or complex background images.</p>
+        </div>
+    </div>
+
+</body>
+</html>
+Use code with caution.Core Techniques UsedImage Brightness control (filter: brightness(0.6)): This CSS property darkens the underlying image directly in the browser. It removes the need to manually edit the image in Photoshop, ensuring white text always meets accessibility contrast ratios.Font Smoothing (-webkit-font-smoothing): Forces browsers to render font vectors with cleaner pixel anti-aliasing, preserving the "sharpness" of thin geometric cuts or heavy serifs.Micro Text-Shadows: By applying a multi-layered, soft black text shadow, you ensure that if a bright or white spot in the image aligns perfectly with a letter, the letter remains completely readable.Layer Isolation (z-index): Ensures that the text layer sits strictly on top of the image container to prevent rendering artifacts or unintended blur inheritance.Alternate approach: The "Scrim" overlayIf you prefer not to dim the entire image, you can swap the filter: brightness() property for a CSS gradient overlay (scrim) directly over the text container:css/* Apply this to a div between the image and the text */
+.scrim-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 15;
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%);
+}
+Use code with caution.To help tailor this design, what kind of image are you working with (e.g., a busy, colorful photo or a minimalist pattern)? If you have a specific font style or layout framework in mind, let me know.If you have a specific font style: randomize , or layout: randomize framework in mind, let me know.
+kind of image: on the beachhtml<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Beach Typography Experiment</title>
+    <!-- Google Fonts for randomized styles -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Cinzel:wght@700&family=Playfair+Display:ital,wght@0,700;1,400&family=Space+Grotesk:wght@700&family=Syne:wght@800&family=Unbounded:wght@800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #111;
+            overflow: hidden;
+            font-family: system-ui, sans-serif;
+        }
+
+        /* Hero Wrapper */
+        .stage {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Sharp Beach Image with dynamic adjustments */
+        .beach-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            transition: filter 0.5s ease;
+        }
+
+        /* Gradient scrim overlay for extra text isolation */
+        .overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            mix-blend-mode: multiply;
+            transition: background 0.5s ease;
+        }
+
+        /* Typography Container */
+        .typeset-box {
+            position: relative;
+            z-index: 3;
+            color: #ffffff;
+            padding: 40px;
+            max-width: 800px;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Interactive Controls Button */
+        .randomize-btn {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            z-index: 10;
+            padding: 14px 28px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: #000;
+            background: #fff;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.2s, background 0.2s;
+        }
+        .randomize-btn:hover {
+            transform: scale(1.05);
+            background: #f0f0f0;
+        }
+        .randomize-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Layout Framework States (Controlled by JavaScript) */
+        
+        /* 1. Centered Minimalist Minimal */
+        .layout-center {
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* 2. Editorial Left-aligned Column */
+        .layout-editorial-left {
+            align-items: flex-end;
+            justify-content: flex-start;
+            text-align: left;
+        }
+
+        /* 3. Brutalist Right Stack */
+        .layout-brutalist-right {
+            align-items: flex-start;
+            justify-content: flex-end;
+            text-align: right;
+        }
+
+        /* Dynamic Title Styling adjusted by JS */
+        .dynamic-title {
+            line-height: 1.05;
+            margin-bottom: 20px;
+            transition: font-size 0.4s, letter-spacing 0.4s;
+        }
+
+        .dynamic-subtitle {
+            font-size: 1.2rem;
+            max-width: 550px;
+            line-height: 1.6;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+    <main class="stage layout-center" id="stage">
+        <!-- Sun-drenched beach image that we will adjust programmatically -->
+        <img id="beachImage" src="https://unsplash.com" alt="Ocean Beach" class="beach-bg">
+        
+        <div id="overlay" class="overlay"></div>
+
+        <div class="typeset-box" id="typesetBox">
+            <h1 class="dynamic-title" id="titleText">Ebb & Flow</h1>
+            <p class="dynamic-subtitle" id="subtitleText">Testing crisp typography sharpness against active coastal horizons using automated micro-contrasts.</p>
+        </div>
+    </main>
+
+    <button class="randomize-btn" onclick="randomizeDesign()">Randomize Look</button>
+
+    <script>
+        // Preset configurations for randomized pools
+        const designPools = {
+            fonts: [
+                { name: "'Playfair Display', serif", weight: "700", style: "italic" },
+                { name: "'Space Grotesk', sans-serif", weight: "700", style: "normal" },
+                { name: "'Cinzel', serif", weight: "700", style: "normal" },
+                { name: "'Syne', sans-serif", weight: "800", style: "normal" },
+                { name: "'Unbounded', sans-serif", weight: "800", style: "normal" }
+            ],
+            layouts: [
+                'layout-center', 
+                'layout-editorial-left', 
+                'layout-brutalist-right'
+            ],
+            phrases: [
+                { t: "SALT IN THE AIR", s: "Where the high tide meets sharp, modern mathematical layout structures perfectly." },
+                { t: "COASTAL SHIFT", s: "An exploration of dynamic image filters ensuring complete absolute accessible readability." },
+                { t: "BAREFOOT", s: "Stark contrast typography breaking through bright morning sun glare on white sand." },
+                { t: "MIDNIGHT SURF", s: "Deep ocean horizons framing precise text weights, crisp vector smoothing activated." }
+            ]
+        };
+
+        function randomizeDesign() {
+            const stage = document.getElementById('stage');
+            const img = document.getElementById('beachImage');
+            const overlay = document.getElementById('overlay');
+            const title = document.getElementById('titleText');
+            const subtitle = document.getElementById('subtitleText');
+
+            // 1. Randomize Font Choice
+            const randomFont = designPools.fonts[Math.floor(Math.random() * designPools.fonts.length)];
+            title.style.fontFamily = randomFont.name;
+            title.style.fontWeight = randomFont.weight;
+            title.style.fontStyle = randomFont.style;
+
+            // 2. Randomize Layout Framework Class
+            designPools.layouts.forEach(className => stage.classList.remove(className));
+            const randomLayout = designPools.layouts[Math.floor(Math.random() * designPools.layouts.length)];
+            stage.classList.add(randomLayout);
+
+            // 3. Randomize Text Sizing & Intentional Spacing Variations
+            const sizes = ['2.8rem', '3.5rem', '4.5rem', '5.5rem'];
+            title.style.fontSize = sizes[Math.floor(Math.random() * sizes.length)];
+            title.style.letterSpacing = Math.random() > 0.5 ? '-0.03em' : '0.05em';
+
+            // 4. Randomize Text Copy
+            const randomPhrase = designPools.phrases[Math.floor(Math.random() * designPools.phrases.length)];
+            title.innerText = randomPhrase.t;
+            subtitle.innerText = randomPhrase.s;
+
+            // 5. Dynamic Sharpness & Brightness Algorithm
+            // Randomly test between dark dimming or warm color block contrast
+            const brightnessValue = (Math.random() * (0.65 - 0.4) + 0.4).toFixed(2); // Keeps it between 0.40 and 0.65
+            const contrastValue = (Math.random() * (1.2 - 0.9) + 0.9).toFixed(2);
+            
+            // Apply native CSS filters directly to the image element
+            img.style.filter = `brightness(${brightnessValue}) contrast(${contrastValue}) saturate(1.1)`;
+            
+            // Randomize a subtle text-shadow shift to match layout gravity
+            if (randomLayout === 'layout-brutalist-right') {
+                title.style.textShadow = '4px 4px 0px rgba(0,0,0,0.8)';
+            } else {
+                title.style.textShadow = '0 4px 15px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.7)';
+            }
+        }
+
+        // Initialize with a random setup on load
+        window.onload = randomizeDesign;
+    </script>
+</body>
+</html>
+Use code with caution.What This Dynamic Solution DoesAutomated Brightness Optimization: Every click processes a variable brightness() filter mathematically calculated between 0.40 and 0.65 via JavaScript. This guarantees the image remains dark enough behind the typography to maintain strict accessibility contrast, without stripping the beach photo of its warmth.Layout Swaps on the Fly: It shifts structural frameworks across centered minimalist styles, editorial left columns, and blocky right stacks using quick token extraction on the layout class.Anti-Aliasing Locking: It locks down -webkit-font-smoothing and pairs it with dynamic text-shadow adjustments tailored to specific font weights, so fine serif details do not pixelate or vanish into light areas like the ocean foam or bright beach sand.Would you like to build on this script to incorporate a light mode overlay variant (using dark text over an intentionally brightened/bleached image) or adjust how the typography shifts its position based on mobile viewports?build on this script to incorporate a light mode overlay variant (using dark text over an intentionally brightened/bleached image) or adjust how the typography shifts its position based on mobile viewports?Here is the updated, production-ready implementation. This build introduces a Dual-Mode System (automatically alternating between Dark/Dimmed Mode and Light/Bleached Mode) and incorporates Fluid Mobile Viewports using CSS Container Queries and logical viewport scaling.Updated Complete Codehtml<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Fluid Beach Typography</title>
+    <!-- Google Fonts for randomized styles -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Cinzel:wght@700&family=Playfair+Display:ital,wght@0,700;1,400&family=Space+Grotesk:wght@700&family=Syne:wght@800&family=Unbounded:wght@800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #111;
+            overflow: hidden;
+            font-family: system-ui, sans-serif;
+            transition: background-color 0.4s ease;
+        }
+
+        /* Hero Wrapper */
+        .stage {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            padding: 24px;
+            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Sharp Beach Image with dynamic adjustments */
+        .beach-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            transition: filter 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Typography Container */
+        .typeset-box {
+            position: relative;
+            z-index: 3;
+            max-width: 800px;
+            width: 100%;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: color 0.4s ease, text-shadow 0.4s ease;
+        }
+
+        /* Dynamic Title & Subtitle Fluid Layouts */
+        .dynamic-title {
+            /* Hybrid viewport scale clamped between clean boundaries */
+            font-size: clamp(2.5rem, 8vw, 5.5rem);
+            line-height: 1.05;
+            margin-bottom: 16px;
+            transition: font-size 0.4s, letter-spacing 0.4s;
+        }
+
+        .dynamic-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.35rem);
+            max-width: 540px;
+            line-height: 1.5;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        /* CONTROLS AREA */
+        .control-panel {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            right: 24px;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .mode-indicator {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background 0.4s, color 0.4s;
+        }
+
+        .randomize-btn {
+            pointer-events: auto;
+            padding: 14px 28px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: transform 0.2s, background 0.2s, color 0.2s;
+        }
+        .randomize-btn:hover { transform: scale(1.04); }
+        .randomize-btn:active { transform: scale(0.98); }
+
+        /* ==========================================
+           LAYOUT FRAMEWORKS (Desktop / General)
+           ========================================== */
+        .layout-center { align-items: center; justify-content: center; text-align: center; }
+        .layout-editorial-left { align-items: flex-end; justify-content: flex-start; text-align: left; }
+        .layout-brutalist-right { align-items: flex-start; justify-content: flex-end; text-align: right; }
+
+        /* ==========================================
+           CONTRAST POLARITIES (Light vs Dark Mode)
+           ========================================== */
+        
+        /* Dark Mode Properties */
+        .mode-dark { background-color: #111; }
+        .mode-dark .typeset-box { color: #ffffff; }
+        .mode-dark .mode-indicator { background: rgba(255,255,255,0.15); color: #fff; }
+        .mode-dark .randomize-btn { background: #ffffff; color: #000000; }
+
+        /* Light Mode Properties (Bleached Backdrop) */
+        .mode-light { background-color: #f4f4f4; }
+        .mode-light .typeset-box { color: #1a202c; }
+        .mode-light .mode-indicator { background: rgba(0,0,0,0.08); color: #1a202c; }
+        .mode-light .randomize-btn { background: #1a202c; color: #ffffff; }
+
+
+        /* ==========================================
+           MOBILE RESPONSIVE ADAPTATIONS
+           ========================================== */
+        @media (max-width: 768px) {
+            .stage {
+                /* Lock structural alignment layout for crowded small viewports */
+                align-items: center !important;
+                justify-content: center !important;
+                text-align: center !important;
+                padding: 16px;
+            }
+            .typeset-box {
+                max-width: 100%;
+            }
+            .dynamic-subtitle {
+                max-width: 100%;
+            }
+            .control-panel {
+                flex-direction: column-reverse;
+                gap: 12px;
+                bottom: 16px;
+                left: 16px;
+                right: 16px;
+            }
+            .randomize-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body class="mode-dark">
+
+    <main class="stage layout-center" id="stage">
+        <!-- Sun-drenched beach asset -->
+        <img id="beachImage" src="https://unsplash.com" alt="Ocean Beach" class="beach-bg">
+        
+        <div class="typeset-box" id="typesetBox">
+            <h1 class="dynamic-title" id="titleText">Salt & Light</h1>
+            <p class="dynamic-subtitle" id="subtitleText">Calculated sharpness optimization running responsive typography tests across light and dark coastal exposures.</p>
+        </div>
+    </main>
+
+    <div class="control-panel">
+        <div class="mode-indicator" id="modeIndicator">Dark Mode Overlay</div>
+        <button class="randomize-btn" onclick="randomizeDesign()">Randomize Look</button>
+    </div>
+
+    <script>
+        const designPools = {
+            fonts: [
+                { name: "'Playfair Display', serif", weight: "700", style: "italic" },
+                { name: "'Space Grotesk', sans-serif", weight: "700", style: "normal" },
+                { name: "'Cinzel', serif", weight: "700", style: "normal" },
+                { name: "'Syne', sans-serif", weight: "800", style: "normal" },
+                { name: "'Unbounded', sans-serif", weight: "800", style: "normal" }
+            ],
+            layouts: ['layout-center', 'layout-editorial-left', 'layout-brutalist-right'],
+            phrases: [
+                { t: "SALT IN THE AIR", s: "Where the high tide meets sharp, modern mathematical layout structures perfectly." },
+                { t: "COASTAL SHIFT", s: "An exploration of dynamic image filters ensuring complete absolute accessible readability." },
+                { t: "BAREFOOT", s: "Stark contrast typography breaking through bright morning sun glare on white sand." },
+                { t: "MIDNIGHT SURF", s: "Deep ocean horizons framing precise text weights, crisp vector smoothing activated." }
+            ]
+        };
+
+        function randomizeDesign() {
+            const body = document.body;
+            const stage = document.getElementById('stage');
+            const img = document.getElementById('beachImage');
+            const title = document.getElementById('titleText');
+            const subtitle = document.getElementById('subtitleText');
+            const indicator = document.getElementById('modeIndicator');
+
+            // 1. Determine Polarity Mode (50/50 chance for Light vs Dark approach)
+            const isLightMode = Math.random() > 0.5;
+            
+            if (isLightMode) {
+                body.className = "mode-light";
+                indicator.innerText = "Light Mode (Bleached Image)";
+            } else {
+                body.className = "mode-dark";
+                indicator.innerText = "Dark Mode (Dimmed Image)";
+            }
+
+            // 2. Randomize Font Choices
+            const randomFont = designPools.fonts[Math.floor(Math.random() * designPools.fonts.length)];
+            title.style.fontFamily = randomFont.name;
+            title.style.fontWeight = randomFont.weight;
+            title.style.fontStyle = randomFont.style;
+
+            // 3. Randomize Layout Framework Class
+            designPools.layouts.forEach(className => stage.classList.remove(className));
+            const randomLayout = designPools.layouts[Math.floor(Math.random() * designPools.layouts.length)];
+            stage.classList.add(randomLayout);
+
+            // 4. Structural Spacing Variations
+            title.style.letterSpacing = Math.random() > 0.5 ? '-0.04em' : '0.04em';
+
+            // 5. Update Copy Text Strings
+            const randomPhrase = designPools.phrases[Math.floor(Math.random() * designPools.phrases.length)];
+            title.innerText = randomPhrase.t;
+            subtitle.innerText = randomPhrase.s;
+
+            // 6. Native Browser CSS Filter Engine Core
+            if (isLightMode) {
+                // LIGHT MODE: Intentionally bleach/overexpose image to establish dark text legibility
+                const brightnessValue = (Math.random() * (1.7 - 1.4) + 1.4).toFixed(2); // 1.40 to 1.70const contrastValue = (Math.random() * (0.7 - 0.5) + 0.5).toFixed(2);   // Low contrast softens busy wave patternsconst saturateValue = (Math.random() * (0.5 - 0.2) + 0.2).toFixed(2);   // Desaturate to mitigate color clashesimg.style.filter = brightness(${brightnessValue}) contrast(${contrastValue}) saturate(${saturateValue});// Micro Drop Shadows for Dark Text on Bleached Imagetitle.style.textShadow = '0 1px 2px rgba(255,255,255,0.8)';subtitle.style.textShadow = 'none';} else {// DARK MODE: Traditional low-key dimming patternconst brightnessValue = (Math.random() * (0.6 - 0.4) + 0.4).toFixed(2); // 0.40 to 0.60const contrastValue = (Math.random() * (1.2 - 0.9) + 0.9).toFixed(2);img.style.filter = brightness(${brightnessValue}) contrast(${contrastValue}) saturate(1.15);
+
+                img.style.filter = brightness(${brightnessValue}) contrast(${contrastValue}) saturate(1.15);// Shadows adjusted to prevent glow artifacts on dense layoutsif (randomLayout === 'layout-brutalist-right') {title.style.textShadow = '3px 3px 0px rgba(0,0,0,0.7)';} else {title.style.textShadow = '0 4px 12px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.6)';}subtitle.style.textShadow = '0 2px 4px rgba(0,0,0,0.5)';}}// Run routine initialization on window frame assemblywindow.onload = randomizeDesign;
