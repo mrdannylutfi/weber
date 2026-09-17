@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sharp Text Over Image</title>
+    <style>
+        /* Container holding both image and text */
+        .hero-container {
+            position: relative;
+            width: 100%;
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        /* The background image with built-in brightness reduction */
+        .hero-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            /* Lowers image brightness by 40% to make text pop */
+            filter: brightness(0.6); 
+        }
+
+        /* The text wrapper */
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+            text-align: center;
+            padding: 20px;
+            color: #ffffff; /* High contrast white text */
+        }
+
+        /* Maximizing text sharpness and legibility */
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            
+            /* Subtly smoothes fonts on macOS/iOS for crisp rendering */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            
+            /* Text shadow adds micro-contrast against busy image details */
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6), 
+                         0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-description {
+            font-size: 1.25rem;
+            font-weight: 400;
+            line-height: 1.6;
+            /* Semi-transparent white to create hierarchy while remaining legible */
+            color: rgba(255, 255, 255, 0.9); 
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero-container">
+        <!-- Replace with your image URL -->
+        <img src="https://unsplash.com" alt="Scenic Background" class="hero-image">
+        
+        <div class="hero-content">
+            <h1 class="hero-title">Breathtaking Typography</h1>
+            <p class="hero-description">This text remains razor-sharp and highly readable, even against unpredictable, bright, or complex background images.</p>
+        </div>
+    </div>
+
+</body>
+</html>
